@@ -1,6 +1,6 @@
 This is a Minecraft-like game, called VoxelGrid.
 
-Current version: 0.2.1-alpha
+Current version: 0.3.0-alpha
 
 Controls:
 - W, A, S, D: Move / Fly
@@ -8,8 +8,8 @@ Controls:
 - Mouse Drag: Look Around
 
 Known bugs(so please don't spam these):
-- None(Yipee!)
+None(Yipee!)
 
 Credits:
-- Gemini: assistance with html code.
-- Me: Idea and Python code
+Gemini: assistance with html code.
+Me: Idea and Python code
