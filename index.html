@@ -4,21 +4,44 @@
   <title>VoxelGrid Python Web</title>
   <style>
     body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; background-color: #74b9ff; }
+    /* Clean Minecraft-style HUD layout */
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px;
+      border-radius: 4px;
+      pointer-events: none;
+      line-height: 1.5;
+    }
   </style>
+  <!-- Load Brython (Python in Browser Engine) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.10.5/brython.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.10.5/brython_stdlib.min.js"></script>
+  <!-- Load 3D Engine Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body onload="brython()">
 
+  <!-- The Live HUD Display -->
+  <div id="hud">
+    <strong>VoxelGrid v0.2.1-alpha</strong><br>
+    XYZ: <span id="coords">0.00 / 8.00 / 15.00</span>
+  </div>
+
   <script>
     let scene, camera, renderer, keys = {}, targetVector = new THREE.Vector3();
     let yaw = 0, pitch = 0, moveSpeed = 0.25, isDragging = false, prevMouse = {x:0, y:0};
+    let coordsDisplay;
 
     window.addEventListener('load', () => {
+      coordsDisplay = document.getElementById('coords');
       scene = new THREE.Scene(); scene.background = new THREE.Color(0x74b9ff);
       
-      // Adjusted camera to look slightly downward at the grid
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 8, 15); 
       pitch = -0.4; 
@@ -28,7 +51,6 @@
       scene.add(new THREE.AmbientLight(0xffffff, 0.8));
       let dl = new THREE.DirectionalLight(0xffffff, 0.4); dl.position.set(20, 40, 20); scene.add(dl);
 
-      // Wait 1 second for the Python file to cleanly mount before triggering generation
       setTimeout(() => { 
         if (window.generate_world) {
           window.generate_world(scene); 
@@ -56,10 +78,18 @@
         if (keys['a']) { camera.position.x -= fz * moveSpeed; camera.position.z += fx * moveSpeed; }
         if (keys['d']) { camera.position.x += fz * moveSpeed; camera.position.z -= fx * moveSpeed; }
         if (keys[' ']) camera.position.y += moveSpeed; if (keys['shift']) camera.position.y -= moveSpeed;
+        
         targetVector.x = camera.position.x - Math.sin(yaw) * Math.cos(pitch);
         targetVector.y = camera.position.y + Math.sin(pitch);
         targetVector.z = camera.position.z - Math.cos(yaw) * Math.cos(pitch);
-        camera.lookAt(targetVector); renderer.render(scene, camera);
+        camera.lookAt(targetVector); 
+        
+        // Update the coordinates string dynamically in the HUD
+        if (coordsDisplay) {
+          coordsDisplay.innerText = `${camera.position.x.toFixed(2)} / ${camera.position.y.toFixed(2)} / ${camera.position.z.toFixed(2)}`;
+        }
+
+        renderer.render(scene, camera);
       }
       animate();
     });
