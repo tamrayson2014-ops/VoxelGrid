@@ -8,8 +8,8 @@ Controls:
 - Mouse Drag: Look Around
 
 Known bugs(so please don't spam these):
-None(Yipee!)
+- None(Yipee!)
 
 Credits:
-Gemini: assistance with html code.
-Me: Idea and Python code
+- Gemini: assistance with html code.
+- Me: Idea and Python code
